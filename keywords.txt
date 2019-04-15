@@ -1,0 +1,20 @@
+#######################################
+# Syntax Coloring Map For WS2812-ESPLib
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+WS2812	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+showColorLine			KEYWORD2
+showSpecificColorLine	KEYWORD2
+countPixel				KEYWORD2
+setPixels				KEYWORD2
+getPin					KEYWORD2
+setPin					KEYWORD2
