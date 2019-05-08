@@ -1,7 +1,7 @@
 //----------------------------------------------------
 // File:		WS2812.cpp
 // Version:  	v0.1.2
-// Change date:	15.04.2019
+// Change date:	08.05.2019
 // Autor:    	4Source
 // Homepage: 	github.com/4Source
 //----------------------------------------------------
@@ -13,7 +13,7 @@ WS2812::WS2812(uint8_t countPixel, uint8_t gpio_pin)
 	if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
 	#endif
 	
-	pixels=countPixel;
+	pixels = countPixel;
 	pin=gpio_pin;
 	
 	neoPixel = Adafruit_NeoPixel(countPixel, gpio_pin, NEO_GRB + NEO_KHZ800);
@@ -23,20 +23,34 @@ WS2812::WS2812(uint8_t countPixel, uint8_t gpio_pin)
 }
 void WS2812::sendPixelGRB( unsigned char r, unsigned char g , unsigned char b )  
 {
-	neoPixel.setPixelColor(aPixel, r, g, b);  
+	neoPixel.setPixelColor(aktivPixel, r, g, b);  
 }
 void WS2812::show() 
 {
 	neoPixel.show();
 }
 //Show Color for all pixels
+void WS2812::showChangeSingle( unsigned char r , unsigned char g , unsigned char b, uint8_t pixelNr ) 
+{ 
+	if(pixelNr < pixels)
+	{
+		aktivPixel = pixelNr;
+	}
+	else
+	{
+		aktivPixel = 0;
+	}
+	sendPixelGRB( r , g , b );
+	show();
+}
+//Show Color for all pixels
 void WS2812::showColorLine( unsigned char r , unsigned char g , unsigned char b ) 
 { 
-	aPixel=0;
-	for( int p = 0; p  < pixels; p++ ) 
+	aktivPixel = 0;
+	while( aktivPixel  < pixels ) 
 	{
 		sendPixelGRB( r , g , b );
-		aPixel++;
+		aktivPixel++;
 	}
 	show();
 }
@@ -46,8 +60,8 @@ void WS2812::showSpecificColorLine(unsigned char *buffer)
 	unsigned char r;
 	unsigned char g;
 	unsigned char b;
-	aPixel=0;
-	for( int p = 0; p  < pixels; p++ ) 
+	aktivPixel = 0;
+	while( aktivPixel  < pixels ) 
 	{
 		r = *buffer;
 		buffer++;
@@ -57,7 +71,7 @@ void WS2812::showSpecificColorLine(unsigned char *buffer)
 		buffer++;
 
 		sendPixelGRB( r , g , b );
-		aPixel++;
+		aktivPixel++;
 	}
 	show();
 }
@@ -68,7 +82,7 @@ uint8_t WS2812::countPixel()
 }
 void WS2812::setPixels(uint8_t countPixel)
 {
-	pixels=countPixel;
+	pixels = countPixel;
 }
 uint8_t WS2812::getPin()
 {

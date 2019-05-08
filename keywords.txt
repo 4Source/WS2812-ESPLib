@@ -12,9 +12,10 @@ WS2812	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
+showChangeSingle		KEYWORD2
 showColorLine			KEYWORD2
-showSpecificColorLine	KEYWORD2
-countPixel				KEYWORD2
-setPixels				KEYWORD2
-getPin					KEYWORD2
-setPin					KEYWORD2
+showSpecificColorLine		KEYWORD2
+countPixel			KEYWORD2
+setPixels			KEYWORD2
+getPin				KEYWORD2
+setPin				KEYWORD2
