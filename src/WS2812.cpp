@@ -1,7 +1,7 @@
 //----------------------------------------------------
-// File:		WS2812.cpp
-// Version:  	v0.1.2
-// Change date:	08.05.2019
+// File:	WS2812.cpp
+// Version:  	v0.1.3
+// Change date:	09.06.2019
 // Autor:    	4Source
 // Homepage: 	github.com/4Source
 //----------------------------------------------------
@@ -14,9 +14,9 @@ WS2812::WS2812(uint8_t countPixel, uint8_t gpio_pin)
 	#endif
 	
 	pixels = countPixel;
-	pin=gpio_pin;
+	pin = gpio_pin;
 	
-	neoPixel = Adafruit_NeoPixel(countPixel, gpio_pin, NEO_GRB + NEO_KHZ800);
+	neoPixel = Adafruit_NeoPixel(pixels, pin, NEO_GRB + NEO_KHZ800);
 	
 	neoPixel.begin();
 	neoPixel.show(); 
@@ -35,13 +35,9 @@ void WS2812::showChangeSingle( unsigned char r , unsigned char g , unsigned char
 	if(pixelNr < pixels)
 	{
 		aktivPixel = pixelNr;
+		sendPixelGRB( r , g , b );
+		show();
 	}
-	else
-	{
-		aktivPixel = 0;
-	}
-	sendPixelGRB( r , g , b );
-	show();
 }
 //Show Color for all pixels
 void WS2812::showColorLine( unsigned char r , unsigned char g , unsigned char b ) 
@@ -83,6 +79,7 @@ uint8_t WS2812::countPixel()
 void WS2812::setPixels(uint8_t countPixel)
 {
 	pixels = countPixel;
+	neoPixel.updateLength(pixels);
 }
 uint8_t WS2812::getPin()
 {
@@ -91,4 +88,5 @@ uint8_t WS2812::getPin()
 void WS2812::setPin(uint8_t gpio_pin)
 {
 	pin = gpio_pin;
+	neoPixel.setPin(pin);
 }
