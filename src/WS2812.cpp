@@ -1,7 +1,7 @@
 //----------------------------------------------------
 // File:	WS2812.cpp
-// Version:  	v0.1.4
-// Change date:	10.06.2019
+// Version:  	v0.1.5
+// Change date:	17.06.2019
 // Autor:    	4Source
 // Homepage: 	github.com/4Source
 //----------------------------------------------------
@@ -21,7 +21,7 @@ WS2812::WS2812(uint8_t countPixel, uint8_t gpio_pin)
 	neoPixel.begin();
 	neoPixel.show(); 
 }
-void WS2812::sendPixelGRB( unsigned char r, unsigned char g , unsigned char b )  
+void WS2812::sendPixelGRB( uint8_t r, uint8_t g , uint8_t b )  
 {
 	neoPixel.setPixelColor(aktivPixel, r, g, b);  
 }
@@ -30,7 +30,7 @@ void WS2812::show()
 	neoPixel.show();
 }
 //Show Color for pixel
-void WS2812::showChangeSingle( unsigned char r , unsigned char g , unsigned char b, uint8_t pixelNr ) 
+void WS2812::showChangeSingle( uint8_t r , uint8_t g , uint8_t b, uint8_t pixelNr ) 
 { 
 	if(pixelNr < pixels)
 	{
@@ -49,7 +49,7 @@ void WS2812::showChangeSingle(uint32_t pixel)
 	showChangeSingle(r, g, b, pixelNr);
 }
 //Show Color for all pixels
-void WS2812::showColorLine( unsigned char r , unsigned char g , unsigned char b ) 
+void WS2812::showColorLine( uint8_t r , uint8_t g , uint8_t b ) 
 { 
 	aktivPixel = 0;
 	while( aktivPixel  < pixels ) 
@@ -59,11 +59,11 @@ void WS2812::showColorLine( unsigned char r , unsigned char g , unsigned char b 
 	}
 	show();
 }
-void WS2812::showColorLine(unsigned char *buffer)
+void WS2812::showColorLine(uint8_t *buffer)
 {
-	unsigned char r = *buffer;
-	unsigned char g = *(buffer + 1);
-	unsigned char b = *(buffer + 2);
+	uint8_t r = *buffer;
+	uint8_t g = *(buffer + 1);
+	uint8_t b = *(buffer + 2);
 	aktivPixel = 0;
 	while( aktivPixel  < pixels ) 
 	{
@@ -73,11 +73,11 @@ void WS2812::showColorLine(unsigned char *buffer)
 	show();
 }
 //Show specific Color for each pixel
-void WS2812::showSpecificColorLine(unsigned char *buffer)
+void WS2812::showSpecificColor(uint8_t *buffer)
 {
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
 	aktivPixel = 0;
 	while( aktivPixel  < pixels ) 
 	{
@@ -107,7 +107,7 @@ uint8_t WS2812::getPin()
 {
 	return pin;
 }
-   void WS2812::setPin(uint8_t gpio_pin)
+void WS2812::setPin(uint8_t gpio_pin)
 {
 	pin = gpio_pin;
 	neoPixel.setPin(pin);
