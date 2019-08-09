@@ -1,7 +1,7 @@
 //----------------------------------------------------
 // File:	WS2812.cpp
-// Version:  	v0.1.5
-// Change date:	17.06.2019
+// Version:  	v0.1.6
+// Change date:	09.08.2019
 // Autor:    	4Source
 // Homepage: 	github.com/4Source
 //----------------------------------------------------
@@ -23,7 +23,8 @@ WS2812::WS2812(uint8_t countPixel, uint8_t gpio_pin)
 }
 void WS2812::sendPixelGRB( uint8_t r, uint8_t g , uint8_t b )  
 {
-	neoPixel.setPixelColor(aktivPixel, r, g, b);  
+	// Serial.print("nr,r,g,b: "); Serial.print(aktivPixel); Serial.print(", ");Serial.print(r); Serial.print(", "); Serial.print(g); Serial.print(", "); Serial.println(b);
+	neoPixel.setPixelColor(aktivPixel, r, g, b);  //Error  
 }
 void WS2812::show() 
 {
@@ -45,17 +46,15 @@ void WS2812::showChangeSingle(uint32_t pixel)
     uint8_t b = (uint8_t)(pixel>>=8);
     uint8_t g = (uint8_t)(pixel>>=8);
     uint8_t r = (uint8_t)(pixel>>=8);
-
+	
 	showChangeSingle(r, g, b, pixelNr);
 }
 //Show Color for all pixels
 void WS2812::showColorLine( uint8_t r , uint8_t g , uint8_t b ) 
 { 
-	aktivPixel = 0;
-	while( aktivPixel  < pixels ) 
+	for( aktivPixel = 0; aktivPixel < pixels; aktivPixel++)
 	{
-		sendPixelGRB( r , g , b );
-		aktivPixel++;
+		sendPixelGRB(r, g, b);
 	}
 	show();
 }
@@ -64,11 +63,10 @@ void WS2812::showColorLine(uint8_t *buffer)
 	uint8_t r = *buffer;
 	uint8_t g = *(buffer + 1);
 	uint8_t b = *(buffer + 2);
-	aktivPixel = 0;
-	while( aktivPixel  < pixels ) 
+	
+	for( aktivPixel = 0; aktivPixel < pixels; aktivPixel++)
 	{
 		sendPixelGRB(r, g, b);
-		aktivPixel++;
 	}
 	show();
 }
@@ -78,8 +76,8 @@ void WS2812::showSpecificColor(uint8_t *buffer)
 	uint8_t r;
 	uint8_t g;
 	uint8_t b;
-	aktivPixel = 0;
-	while( aktivPixel  < pixels ) 
+	
+	for( aktivPixel = 0; aktivPixel < pixels; aktivPixel++)
 	{
 		r = *buffer;
 		buffer++;
@@ -89,11 +87,10 @@ void WS2812::showSpecificColor(uint8_t *buffer)
 		buffer++;
 
 		sendPixelGRB( r , g , b );
-		aktivPixel++;
 	}
+
 	show();
 }
-
 uint8_t WS2812::countPixel()
 {
 	return pixels;
@@ -101,7 +98,7 @@ uint8_t WS2812::countPixel()
 void WS2812::setPixels(uint8_t countPixel)
 {
 	pixels = countPixel;
-	neoPixel.updateLength(pixels);
+	neoPixel.updateLength(pixels);		//Error
 }
 uint8_t WS2812::getPin()
 {
