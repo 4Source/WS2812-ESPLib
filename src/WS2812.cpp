@@ -1,7 +1,7 @@
 //----------------------------------------------------
 // File:	WS2812.cpp
-// Version:  	v0.1.6
-// Change date:	09.08.2019
+// Version:  	v0.1.7
+// Change date:	07.09.2019
 // Autor:    	4Source
 // Homepage: 	github.com/4Source
 //----------------------------------------------------
@@ -23,8 +23,9 @@ WS2812::WS2812(uint8_t countPixel, uint8_t gpio_pin)
 }
 void WS2812::sendPixelGRB( uint8_t r, uint8_t g , uint8_t b )  
 {
-	// Serial.print("nr,r,g,b: "); Serial.print(aktivPixel); Serial.print(", ");Serial.print(r); Serial.print(", "); Serial.print(g); Serial.print(", "); Serial.println(b);
-	neoPixel.setPixelColor(aktivPixel, r, g, b);  //Error  
+	// Serial.println("Step 1");
+	neoPixel.setPixelColor(aktivPixel, r, g, b);  
+	// Serial.println("Step 2");
 }
 void WS2812::show() 
 {
@@ -90,6 +91,10 @@ void WS2812::showSpecificColor(uint8_t *buffer)
 	}
 
 	show();
+}
+uint32_t color(uint8_t r, uint8_t g, uint8_t b)
+{
+	return ((uint32_t)r << 16) | ((uint32_t)g <<  8) | b;
 }
 uint8_t WS2812::countPixel()
 {
