@@ -1,7 +1,7 @@
 //----------------------------------------------------
 // File:	WS2812.cpp
-// Version:  	v0.1.7
-// Change date:	07.09.2019
+// Version:  	v0.1.8
+// Change date:	26.09.2019
 // Autor:    	4Source
 // Homepage: 	github.com/4Source
 //----------------------------------------------------
@@ -23,9 +23,7 @@ WS2812::WS2812(uint8_t countPixel, uint8_t gpio_pin)
 }
 void WS2812::sendPixelGRB( uint8_t r, uint8_t g , uint8_t b )  
 {
-	// Serial.println("Step 1");
 	neoPixel.setPixelColor(aktivPixel, r, g, b);  
-	// Serial.println("Step 2");
 }
 void WS2812::show() 
 {
@@ -38,7 +36,7 @@ void WS2812::showChangeSingle( uint8_t r , uint8_t g , uint8_t b, uint8_t pixelN
 	{
 		aktivPixel = pixelNr;
 		sendPixelGRB( r , g , b );
-		show();
+		//show();
 	}
 }
 void WS2812::showChangeSingle(uint32_t pixel)
@@ -57,7 +55,7 @@ void WS2812::showColorLine( uint8_t r , uint8_t g , uint8_t b )
 	{
 		sendPixelGRB(r, g, b);
 	}
-	show();
+	//show();
 }
 void WS2812::showColorLine(uint8_t *buffer)
 {
@@ -69,7 +67,7 @@ void WS2812::showColorLine(uint8_t *buffer)
 	{
 		sendPixelGRB(r, g, b);
 	}
-	show();
+	//show();
 }
 //Show specific Color for each pixel
 void WS2812::showSpecificColor(uint8_t *buffer)
@@ -90,12 +88,36 @@ void WS2812::showSpecificColor(uint8_t *buffer)
 		sendPixelGRB( r , g , b );
 	}
 
-	show();
+	//show();
 }
-uint32_t color(uint8_t r, uint8_t g, uint8_t b)
+
+uint32_t WS2812::color(uint8_t r, uint8_t g, uint8_t b)
 {
-	return ((uint32_t)r << 16) | ((uint32_t)g <<  8) | b;
+	return ((uint32_t)r << 16) + ((uint32_t)g <<  8) + b;
 }
+uint32_t WS2812::color(uint8_t r, uint8_t g, uint8_t b, uint8_t w)
+{
+	return ((uint32_t)w << 24) + ((uint32_t)r << 16) + ((uint32_t)g <<  8) + b;
+}
+uint8_t WS2812::color_red(uint32_t color)
+{
+	return (uint8_t) color >> 16;
+}
+uint8_t WS2812::color_green(uint32_t color)
+{
+	return (uint8_t) color >> 8;
+}
+uint8_t WS2812::color_blue(uint32_t color)
+{
+	return (uint8_t) color;
+}
+uint8_t WS2812::color_white(uint32_t color)
+{
+	return (uint8_t) color >> 24;
+}
+
+
+
 uint8_t WS2812::countPixel()
 {
 	return pixels;

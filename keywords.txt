@@ -11,11 +11,16 @@ WS2812	KEYWORD1
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-
+sendPixelGRB			KEYWORD2
+show					KEYWORD2
 showChangeSingle		KEYWORD2
 showColorLine			KEYWORD2
 showSpecificColor		KEYWORD2
 color				KEYWORD2
+color_red			KEYWORD2
+color_green			KEYWORD2
+color_blue			KEYWORD2
+color_white			KEYWORD2
 countPixel			KEYWORD2
 setPixels			KEYWORD2
 getPin				KEYWORD2

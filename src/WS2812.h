@@ -1,7 +1,7 @@
 //----------------------------------------------------
 // File:	WS2812.h
-// Version:  	v0.1.7
-// Change date:	07.09.2019
+// Version:  	v0.1.8
+// Change date:	26.09.2019
 // Autor:    	4Source
 // Homepage: 	github.com/4Source
 //----------------------------------------------------
@@ -23,17 +23,27 @@ class WS2812
 		uint8_t pin;
 		
 		void sendPixelGRB( uint8_t, uint8_t, uint8_t);
-		void show();
 		
 	public:
 		WS2812(uint8_t,uint8_t);
+		
+		void show();
 	
 		void showChangeSingle(uint8_t, uint8_t, uint8_t, uint8_t);
 		void showChangeSingle(uint32_t);
+		
 		void showColorLine(uint8_t, uint8_t, uint8_t);
 		void showColorLine(uint8_t*);
+		
 		void showSpecificColor(uint8_t*);
-		uint32_t color(uint8_t, uint8_t, uint8_t);
+		
+		static uint32_t color(uint8_t, uint8_t, uint8_t);
+		static uint32_t color(uint8_t, uint8_t, uint8_t, uint8_t);
+		static uint8_t color_red(uint32_t);
+		static uint8_t color_green(uint32_t);
+		static uint8_t color_blue(uint32_t);
+		static uint8_t color_white(uint32_t);
+		
 		uint8_t countPixel();
 		void setPixels(uint8_t);
 		uint8_t getPin();
