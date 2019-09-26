@@ -1,7 +1,7 @@
 //----------------------------------------------------
 // File:	WS2812.h
-// Version:  	v0.1.6
-// Change date:	09.08.2019
+// Version:  	v0.1.7
+// Change date:	07.09.2019
 // Autor:    	4Source
 // Homepage: 	github.com/4Source
 //----------------------------------------------------
@@ -33,6 +33,7 @@ class WS2812
 		void showColorLine(uint8_t, uint8_t, uint8_t);
 		void showColorLine(uint8_t*);
 		void showSpecificColor(uint8_t*);
+		uint32_t color(uint8_t, uint8_t, uint8_t);
 		uint8_t countPixel();
 		void setPixels(uint8_t);
 		uint8_t getPin();

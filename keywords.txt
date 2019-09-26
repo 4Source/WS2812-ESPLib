@@ -15,6 +15,7 @@ WS2812	KEYWORD1
 showChangeSingle		KEYWORD2
 showColorLine			KEYWORD2
 showSpecificColor		KEYWORD2
+color				KEYWORD2
 countPixel			KEYWORD2
 setPixels			KEYWORD2
 getPin				KEYWORD2
