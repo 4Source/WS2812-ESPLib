@@ -1,7 +1,7 @@
 //----------------------------------------------------
 // File:		BasicWS2812SpecificColorLine.ino
-// Version:  	v0.1.1
-// Change date:	09.08.2019
+// Version:  	v0.1.9
+// Change date:	28.09.2019
 // Autor:    	4Source
 // Homepage: 	github.com/4Source
 //----------------------------------------------------
@@ -13,10 +13,10 @@
 uint8_t dataPin = 12;
 //Connected Leds on data line
 uint8_t ledQuantity = 4;
-unsigned char color[] = { 	255,0,0,
-							0,255,0,
-							0,0,255,
-							255,255,255};
+uint8_t color[] = { 	255,0,0,
+						0,255,0,
+						0,0,255,
+						255,255,255};
 
 WS2812 ws2812 = WS2812(ledQuantity, dataPin);
 
@@ -27,11 +27,11 @@ void setup(void) {
 	Serial.println();
 	Serial.println("Ready!");
 	
+	ws2812.SpecificColor(&color[0]);
+	ws2812.show();
 }
 //Loop
 void loop() 
 {
-	ws2812.showSpecificColor(&color[0]);
-	Serial.println("f");
-	delay(1000);
+	
 }

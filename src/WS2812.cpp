@@ -1,11 +1,19 @@
 //----------------------------------------------------
 // File:	WS2812.cpp
-// Version:  	v0.1.8
-// Change date:	26.09.2019
+// Version:  	v0.1.9
+// Change date:	28.09.2019
 // Autor:    	4Source
 // Homepage: 	github.com/4Source
 //----------------------------------------------------
 #include "WS2812.h"
+
+static uint32_t _getCycleCount(void) __attribute__((always_inline));
+static inline uint32_t _getCycleCount(void) {
+  uint32_t ccount;
+  __asm__ __volatile__("rsr %0,ccount":"=a" (ccount));
+  return ccount;
+}
+
 //Set the specified pin as Digital Output 
 WS2812::WS2812(uint8_t countPixel, uint8_t gpio_pin)
 {
@@ -15,68 +23,107 @@ WS2812::WS2812(uint8_t countPixel, uint8_t gpio_pin)
 	
 	pixels = countPixel;
 	pin = gpio_pin;
+	aktivByte = 0;
 	
-	neoPixel = Adafruit_NeoPixel(pixels, pin, NEO_GRB + NEO_KHZ800);
+	uint16_t bytes = pixels * 3;
 	
-	neoPixel.begin();
-	neoPixel.show(); 
+	colorBuffer = (uint8_t*)calloc(bytes, sizeof(uint8_t));
+	pinMode(pin, OUTPUT);
 }
-void WS2812::sendPixelGRB( uint8_t r, uint8_t g , uint8_t b )  
-{
-	neoPixel.setPixelColor(aktivPixel, r, g, b);  
+void WS2812::setPixelGRB( uint8_t r, uint8_t g , uint8_t b )  
+{	
+	colorBuffer[aktivByte] = g;
+	colorBuffer[aktivByte + 1] = r;
+	colorBuffer[aktivByte + 2] = b;
 }
 void WS2812::show() 
 {
-	neoPixel.show();
+	noInterrupts();
+	uint32_t time;
+	uint32_t time_long = T1H;
+	uint32_t time_short = T0H; 
+	uint32_t time_ret = RES;
+	uint32_t time_peri = PERI; 
+	uint32_t cycle_start = 0; 
+	uint32_t cycle_now = 0;
+	uint8_t mask = 0x80;
+	uint32_t index = 0;
+	
+	while(index < (pixels * 3))
+	{
+		while(mask > 0)
+		{
+			if((colorBuffer[index] & mask)== mask)
+			{
+				time = time_long;
+			}
+			else
+			{
+				time = time_short;
+	
+			}
+			while(((cycle_now = _getCycleCount()) - cycle_start) < time_peri);
+			PIN_OUT_SET(pin);
+			cycle_start = cycle_now;
+			while(((cycle_now = _getCycleCount()) - cycle_start) < time);
+			PIN_OUT_CLEAR(pin);
+			while(((cycle_now = _getCycleCount()) - cycle_start) < time_peri);
+			
+			mask >>= 1;
+		}
+		mask = 0x80;
+		index++;
+	}
+	PIN_OUT_CLEAR(pin);
+	cycle_start = cycle_now;
+	while(((cycle_now = _getCycleCount()) - cycle_start) < time_ret);
+	interrupts();
 }
-//Show Color for pixel
-void WS2812::showChangeSingle( uint8_t r , uint8_t g , uint8_t b, uint8_t pixelNr ) 
+//Color for pixel
+void WS2812::Single( uint8_t r , uint8_t g , uint8_t b, uint8_t pixelNr ) 
 { 
 	if(pixelNr < pixels)
 	{
-		aktivPixel = pixelNr;
-		sendPixelGRB( r , g , b );
-		//show();
+		aktivByte = pixelNr * 3;
+		setPixelGRB( r , g , b );
 	}
 }
-void WS2812::showChangeSingle(uint32_t pixel)
+void WS2812::Single(uint32_t pixel)
 {
     uint8_t pixelNr = (uint8_t)pixel;
     uint8_t b = (uint8_t)(pixel>>=8);
     uint8_t g = (uint8_t)(pixel>>=8);
     uint8_t r = (uint8_t)(pixel>>=8);
 	
-	showChangeSingle(r, g, b, pixelNr);
+	Single(r, g, b, pixelNr);
 }
-//Show Color for all pixels
-void WS2812::showColorLine( uint8_t r , uint8_t g , uint8_t b ) 
+//Color for all pixels
+void WS2812::ColorLine( uint8_t r , uint8_t g , uint8_t b ) 
 { 
-	for( aktivPixel = 0; aktivPixel < pixels; aktivPixel++)
+	for(aktivByte = 0; aktivByte < pixels * 3; aktivByte += 3)
 	{
-		sendPixelGRB(r, g, b);
+		setPixelGRB(r, g, b);
 	}
-	//show();
 }
-void WS2812::showColorLine(uint8_t *buffer)
+void WS2812::ColorLine(uint8_t *buffer)
 {
 	uint8_t r = *buffer;
 	uint8_t g = *(buffer + 1);
 	uint8_t b = *(buffer + 2);
 	
-	for( aktivPixel = 0; aktivPixel < pixels; aktivPixel++)
+	for(aktivByte = 0; aktivByte < pixels * 3; aktivByte += 3)
 	{
-		sendPixelGRB(r, g, b);
+		setPixelGRB(r, g, b);
 	}
-	//show();
 }
-//Show specific Color for each pixel
-void WS2812::showSpecificColor(uint8_t *buffer)
+// specific Color for each pixel
+void WS2812::SpecificColor(uint8_t *buffer)
 {
 	uint8_t r;
 	uint8_t g;
 	uint8_t b;
 	
-	for( aktivPixel = 0; aktivPixel < pixels; aktivPixel++)
+	for(aktivByte = 0; aktivByte < pixels * 3; aktivByte += 3)
 	{
 		r = *buffer;
 		buffer++;
@@ -85,10 +132,8 @@ void WS2812::showSpecificColor(uint8_t *buffer)
 		b = *buffer;
 		buffer++;
 
-		sendPixelGRB( r , g , b );
+		setPixelGRB( r , g , b );
 	}
-
-	//show();
 }
 
 uint32_t WS2812::color(uint8_t r, uint8_t g, uint8_t b)
@@ -122,11 +167,6 @@ uint8_t WS2812::countPixel()
 {
 	return pixels;
 }
-void WS2812::setPixels(uint8_t countPixel)
-{
-	pixels = countPixel;
-	neoPixel.updateLength(pixels);		//Error
-}
 uint8_t WS2812::getPin()
 {
 	return pin;
@@ -134,5 +174,5 @@ uint8_t WS2812::getPin()
 void WS2812::setPin(uint8_t gpio_pin)
 {
 	pin = gpio_pin;
-	neoPixel.setPin(pin);
+	pinMode(pin, OUTPUT);
 }
