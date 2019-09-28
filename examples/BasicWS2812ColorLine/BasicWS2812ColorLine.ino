@@ -1,7 +1,7 @@
 //----------------------------------------------------
 // File:		BasicWS2812ColorLine.ino
-// Version:  	v0.1
-// Change date:	15.04.2019
+// Version:  	v0.1.9
+// Change date:	28.09.2019
 // Autor:    	4Source
 // Homepage: 	github.com/4Source
 //----------------------------------------------------
@@ -13,6 +13,12 @@
 uint8_t dataPin = 12;
 //Connected Leds on data line
 uint8_t ledQuantity = 3;	
+//Red Value 0-255
+uint8_t red = 0;
+//Green Value 0-255
+uint8_t green = 50;
+//Blue Value 0-255
+uint8_t blue = 100;
 
 WS2812 ws2812 = WS2812(ledQuantity, dataPin);
 
@@ -22,10 +28,12 @@ void setup(void) {
 	while(!Serial);
 	Serial.println();
 	Serial.println("Ready!");
+	
+	ws2812.ColorLine(red, green, blue);
+	ws2812.show();
 }
 //Loop
 void loop() 
 {
-	ws2812.showColorLine(0,0,0);
-	delay(1000);
+	
 }
