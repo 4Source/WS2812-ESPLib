@@ -1,4 +1,4 @@
-# WS2812 Library 
+# WS2812 Library //Projekt closed
 ## Supported MicroControllers
 At the time of creation, the following micro controllers are supported/tested:
  * ESP8266
